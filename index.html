@@ -207,6 +207,8 @@
         }
         
         function generateRecommendations(path, userAnswers) {
+            // Note: userAnswers parameter is available for future personalization
+            // Currently showing top recommendations based on path type
             const recommendations = [];
             
             if (path === 'home') {
@@ -218,7 +220,7 @@
                 recommendations.push({
                     name: '🥈 NordVPN',
                     description: 'Great balance of security, speed, and affordability.',
-                    bestFor: 'Budget-conscious users who don\'t want to compromise on security'
+                    bestFor: 'Budget-conscious users who don't want to compromise on security'
                 });
                 recommendations.push({
                     name: '🥉 Surfshark',
