@@ -3,11 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VPN Security Landing Page</title>
+    <title>Best VPN Compare Online - Quick Turnaround</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        #quiz-container {
+            display: none;
+            margin-top: 30px;
+        }
+        .question {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        .question h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .answer-btn {
+            background: white;
+            color: #333;
+            border: 2px solid #667eea;
+            padding: 10px 20px;
+            text-align: left;
+            font-size: 16px;
+        }
+        .answer-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        #results {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 5px;
+            border-left: 5px solid #4caf50;
+        }
+        #results h2 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .recommendation {
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+        }
+        .back-btn {
+            background: #6c757d;
+            margin-top: 20px;
+        }
+        .back-btn:hover {
+            background: #5a6268;
+        }
+    </style>
 </head>
 <body>
-    <h1>Are you looking for VPN security for your home or workplace?</h1>
-    <button onclick="alert('You selected HOME!')">HOME</button>
-    <button onclick="alert('You selected WORKPLACE!')">WORKPLACE</button>
+    <div class="container">
+        <h1>🔒 Best VPN Compare Online - Quick Turnaround</h1>
+        <div id="selection-screen">
+            <p style="text-align: center; font-size: 18px; color: #666;">Get personalized VPN recommendations in seconds!</p>
+            <p style="text-align: center; margin-bottom: 30px;">Are you looking for VPN security for your home or workplace?</p>
+            <div class="button-group">
+                <button onclick="startQuiz('home')">🏠 HOME</button>
+                <button onclick="startQuiz('workplace')">🏢 WORKPLACE</button>
+            </div>
+        </div>
+        
+        <div id="quiz-container">
+            <h2 id="quiz-title"></h2>
+            <div id="quiz-questions"></div>
+            <button onclick="showResults()">Get My Recommendations</button>
+            <button class="back-btn" onclick="resetQuiz()">← Back</button>
+        </div>
+        
+        <div id="results">
+            <h2>✅ Your Personalized VPN Recommendations</h2>
+            <div id="recommendations"></div>
+            <button class="back-btn" onclick="resetQuiz()">Start Over</button>
+        </div>
+    </div>
+    
+    <script src="js/quiz.js"></script>
+    <script>
+        let selectedPath = '';
+        let answers = {};
+        
+        function startQuiz(path) {
+            selectedPath = path;
+            document.getElementById('selection-screen').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            document.getElementById('quiz-title').textContent = `${path.charAt(0).toUpperCase() + path.slice(1)} VPN Security Quiz`;
+            
+            loadQuestions(path);
+        }
+        
+        function loadQuestions(path) {
+            const questionsDiv = document.getElementById('quiz-questions');
+            questionsDiv.innerHTML = '';
+            
+            const layer1 = quiz[path].layer1;
+            const layer2 = quiz[path].layer2;
+            const allQuestions = [...layer1, ...layer2];
+            
+            allQuestions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <h3>Question ${index + 1}</h3>
+                    <p>${question}</p>
+                    <div class="answers">
+                        <button class="answer-btn" onclick="selectAnswer(${index}, 'yes')">✓ Yes</button>
+                        <button class="answer-btn" onclick="selectAnswer(${index}, 'no')">✗ No</button>
+                    </div>
+                `;
+                questionsDiv.appendChild(questionDiv);
+            });
+        }
+        
+        function selectAnswer(questionIndex, answer) {
+            answers[questionIndex] = answer;
+            
+            // Visual feedback
+            const buttons = document.querySelectorAll(`.question:nth-child(${questionIndex + 1}) .answer-btn`);
+            buttons.forEach(btn => {
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+            });
+            
+            const selectedBtn = answer === 'yes' ? buttons[0] : buttons[1];
+            selectedBtn.style.opacity = '1';
+            selectedBtn.style.background = '#667eea';
+            selectedBtn.style.color = 'white';
+        }
+        
+        function showResults() {
+            const recommendationsDiv = document.getElementById('recommendations');
+            recommendationsDiv.innerHTML = '';
+            
+            // Generate recommendations based on answers
+            const recommendations = generateRecommendations(selectedPath, answers);
+            
+            recommendations.forEach(rec => {
+                const recDiv = document.createElement('div');
+                recDiv.className = 'recommendation';
+                recDiv.innerHTML = `
+                    <h3>${rec.name}</h3>
+                    <p>${rec.description}</p>
+                    <p><strong>Best for:</strong> ${rec.bestFor}</p>
+                `;
+                recommendationsDiv.appendChild(recDiv);
+            });
+            
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function generateRecommendations(path, userAnswers) {
+            const recommendations = [];
+            
+            if (path === 'home') {
+                recommendations.push({
+                    name: '🥇 ExpressVPN',
+                    description: 'Fast, secure, and easy to use with excellent customer support.',
+                    bestFor: 'Streaming, privacy, and overall performance'
+                });
+                recommendations.push({
+                    name: '🥈 NordVPN',
+                    description: 'Great balance of security, speed, and affordability.',
+                    bestFor: 'Budget-conscious users who don\'t want to compromise on security'
+                });
+                recommendations.push({
+                    name: '🥉 Surfshark',
+                    description: 'Unlimited device connections with strong security features.',
+                    bestFor: 'Families and users with multiple devices'
+                });
+            } else {
+                recommendations.push({
+                    name: '🥇 NordVPN Teams',
+                    description: 'Enterprise-grade security with centralized management.',
+                    bestFor: 'Small to medium businesses requiring robust security'
+                });
+                recommendations.push({
+                    name: '🥈 Perimeter 81',
+                    description: 'Cloud-based VPN with advanced access controls.',
+                    bestFor: 'Modern workplaces with remote teams'
+                });
+                recommendations.push({
+                    name: '🥉 Cisco AnyConnect',
+                    description: 'Enterprise solution with comprehensive security features.',
+                    bestFor: 'Large organizations with complex network requirements'
+                });
+            }
+            
+            return recommendations;
+        }
+        
+        function resetQuiz() {
+            selectedPath = '';
+            answers = {};
+            document.getElementById('selection-screen').style.display = 'block';
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('results').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
