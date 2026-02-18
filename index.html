@@ -72,6 +72,10 @@
             padding: 10px 20px;
             text-align: left;
             font-size: 16px;
+            cursor: pointer;
+        }
+        .answer-btn:disabled {
+            cursor: not-allowed;
         }
         .answer-btn:hover {
             background: #667eea;
@@ -156,6 +160,7 @@
             allQuestions.forEach((question, index) => {
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'question';
+                questionDiv.setAttribute('data-question-index', index);
                 questionDiv.innerHTML = `
                     <h3>Question ${index + 1}</h3>
                     <p>${question}</p>
@@ -171,11 +176,12 @@
         function selectAnswer(questionIndex, answer) {
             answers[questionIndex] = answer;
             
-            // Visual feedback
-            const buttons = document.querySelectorAll(`.question:nth-child(${questionIndex + 1}) .answer-btn`);
+            // Visual feedback with accessibility
+            const questionDiv = document.querySelector(`.question[data-question-index="${questionIndex}"]`);
+            const buttons = questionDiv.querySelectorAll('.answer-btn');
             buttons.forEach(btn => {
+                btn.disabled = true;
                 btn.style.opacity = '0.5';
-                btn.style.pointerEvents = 'none';
             });
             
             const selectedBtn = answer === 'yes' ? buttons[0] : buttons[1];
