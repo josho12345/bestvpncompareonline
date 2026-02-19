@@ -1,0 +1,42 @@
+# GitHub Pages Jekyll Configuration
+# This file optimizes the GitHub Pages deployment
+
+# Exclude files from Jekyll processing
+exclude:
+  - README.md
+  - .gitignore
+  - .git/
+  - .github/
+  - node_modules/
+  - vendor/
+  - tmp/
+  - "*.log"
+
+# Include specific files that start with underscore or dot
+include:
+  - .htaccess
+  - _redirects
+
+# Markdown settings
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+# Plugin settings (GitHub Pages safe plugins)
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# SEO settings
+title: Best VPN Compare Online
+description: Find the perfect VPN solution for your home or workplace. Compare top VPN providers and make an informed decision.
+url: https://bestvpncompareonline.com
+author: BestVPNCompareOnline
+
+# Build settings
+safe: true
+strict_front_matter: true
+
+# Serving settings (for local development)
+host: 0.0.0.0
+port: 4000
