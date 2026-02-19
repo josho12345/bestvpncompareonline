@@ -3,11 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VPN Security Landing Page</title>
+    <title>Best VPN Compare Online - Find Your Perfect VPN</title>
+    <meta name="description" content="Find the perfect VPN solution for your home or workplace. Compare top VPN providers and make an informed decision.">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Are you looking for VPN security for your home or workplace?</h1>
-    <button onclick="alert('You selected HOME!')">HOME</button>
-    <button onclick="alert('You selected WORKPLACE!')">WORKPLACE</button>
+    <div class="container">
+        <h1>Find Your Perfect VPN Solution</h1>
+        <p style="margin-bottom: 2rem; color: #666;">Are you looking for VPN security for your home or workplace?</p>
+        <div class="button-group">
+            <button class="btn-home" onclick="selectPath('home')">HOME</button>
+            <button class="btn-workplace" onclick="selectPath('workplace')">WORKPLACE</button>
+        </div>
+        <div class="description">
+            <p>Choose your context to get personalized VPN recommendations tailored to your specific needs.</p>
+        </div>
+    </div>
+    
+    <script src="js/quiz.js"></script>
+    <script>
+        function selectPath(path) {
+            console.log('Selected path:', path);
+            
+            // Load configuration
+            fetch('config.json')
+                .then(response => response.json())
+                .then(config => {
+                    const userType = path === 'home' ? config.configurations.homeUserType : config.configurations.workplaceUserType;
+                    
+                    // Display quiz questions for the selected path
+                    if (quiz[path]) {
+                        const quizData = quiz[path];
+                        let quizHtml = `<h2>Quiz for ${path.toUpperCase()}</h2>`;
+                        
+                        quizHtml += '<h3>Layer 1 Questions:</h3><ul>';
+                        quizData.layer1.forEach(q => {
+                            quizHtml += `<li>${q}</li>`;
+                        });
+                        quizHtml += '</ul>';
+                        
+                        quizHtml += '<h3>Layer 2 Questions:</h3><ul>';
+                        quizData.layer2.forEach(q => {
+                            quizHtml += `<li>${q}</li>`;
+                        });
+                        quizHtml += '</ul>';
+                        
+                        alert(`You selected ${path.toUpperCase()}!\n\n${quizHtml.replace(/<[^>]*>/g, '\n')}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading configuration:', error);
+                    alert(`You selected ${path.toUpperCase()}!`);
+                });
+        }
+    </script>
 </body>
 </html>
