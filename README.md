@@ -36,6 +36,34 @@ bestvpncompareonline/
 
 This site is deployed using GitHub Pages and is accessible at `bestvpncompareonline.com`.
 
+### Production Deployment Workflow
+
+The site uses automated CI/CD via GitHub Actions:
+
+1. **Pre-Deployment Validation** (Local)
+   ```bash
+   # Run pre-deployment checks
+   ./scripts/pre-deploy-check.sh
+   ```
+
+2. **Commit and Push**
+   ```bash
+   git add .
+   git commit -m "Your deployment message"
+   git push origin main
+   ```
+
+3. **Automated CI/CD Pipeline**
+   - HTML/CSS validation
+   - Security scanning
+   - Link checking
+   - Deployment readiness verification
+
+4. **GitHub Pages Auto-Deploy**
+   - Deploys from main branch automatically
+   - Available at https://bestvpncompareonline.com
+   - DNS configured via CNAME file
+
 ### Local Development
 
 Since this is a static website, you can simply:
@@ -47,15 +75,45 @@ Since this is a static website, you can simply:
    # Using Python
    python -m http.server 8000
    
+   # Using Jekyll (recommended for GitHub Pages simulation)
+   bundle exec jekyll serve
+   
    # Using Node.js
    npx serve
    ```
 
-### Deploying to GitHub Pages
+### Deployment Checklist
 
-1. Push changes to the repository
-2. GitHub Pages automatically deploys from the main branch
-3. The site will be available at your custom domain (configured in CNAME)
+Before deploying to production:
+
+- [ ] Run `./scripts/pre-deploy-check.sh` validation script
+- [ ] Test all pages locally
+- [ ] Verify all links work
+- [ ] Check mobile responsiveness
+- [ ] Review console for JavaScript errors
+- [ ] Verify CNAME configuration
+- [ ] Check that no sensitive data is committed
+- [ ] Ensure copyright year is current
+- [ ] Review GitHub Actions workflow results
+
+### Rollback Procedure
+
+If an issue is discovered after deployment:
+
+1. Identify the last known good commit: `git log --oneline`
+2. Revert to that commit: `git revert <commit-hash>`
+3. Push the revert: `git push origin main`
+4. Monitor GitHub Actions for successful deployment
+
+### Monitoring
+
+After deployment, verify:
+
+- Site is accessible at https://bestvpncompareonline.com
+- All pages load correctly
+- Navigation works across all pages
+- No console errors in browser
+- Check GitHub Pages deployment status in repository settings
 
 ## 🎨 Customization
 
