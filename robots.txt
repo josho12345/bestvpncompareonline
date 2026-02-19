@@ -1,0 +1,12 @@
+# robots.txt for Best VPN Compare Online
+# https://bestvpncompareonline.com/robots.txt
+
+User-agent: *
+Allow: /
+
+# Disallow access to scripts and config
+Disallow: /scripts/
+Disallow: /config.json
+
+# Sitemap location
+Sitemap: https://bestvpncompareonline.com/sitemap.xml
