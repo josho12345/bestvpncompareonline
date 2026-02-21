@@ -1,0 +1,31 @@
+name: Create / Sync preprod branch
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-preprod:
+    name: Sync main → preprod
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout main
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Create or reset preprod branch to HEAD of main
+      run: |
+        git config user.name  "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+        # Create branch if it doesn't exist, or reset it to main's HEAD
+        git checkout -B preprod
+        git push origin preprod --force-with-lease || git push origin preprod
+
+        echo "✅ preprod branch is now in sync with main ($(git rev-parse --short HEAD))"
