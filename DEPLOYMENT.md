@@ -218,6 +218,34 @@ git push origin hotfix-rollback:main --force
 - **Deployment**: Automatic on push
 - **DNS**: CNAME → bestvpncompareonline.com
 
+### Pre-Production Environment
+
+- **URL**: GitHub Pages preview on the `preprod` branch
+- **Branch**: `preprod`
+- **Deployment**: Automatic on push to `preprod` (same CI/CD pipeline as `main`)
+- **Purpose**: Final validation before promoting to production
+
+#### Pre-Production Workflow
+
+1. Create or update the `preprod` branch from your feature branch:
+   ```bash
+   git checkout -b preprod
+   git push origin preprod
+   ```
+
+2. The CI/CD pipeline runs the same validation, security scan, and readiness checks as production.
+
+3. Verify the pre-production build passes all checks in GitHub Actions.
+
+4. Manually smoke-test against the `preprod` branch deployment.
+
+5. Once approved, merge `preprod` → `main` to promote to production:
+   ```bash
+   git checkout main
+   git merge preprod
+   git push origin main
+   ```
+
 ### Development Environment
 
 - **URL**: http://localhost:8000

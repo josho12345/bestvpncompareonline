@@ -4,12 +4,15 @@
 # Exclude files from Jekyll processing
 exclude:
   - README.md
+  - BACKUP.md
   - .gitignore
   - .git/
   - .github/
   - node_modules/
   - vendor/
   - tmp/
+  - backup/
+  - scripts/
   - "*.log"
 
 # Include specific files that start with underscore or dot

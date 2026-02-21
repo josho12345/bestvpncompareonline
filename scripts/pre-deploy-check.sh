@@ -70,7 +70,7 @@ fi
 echo ""
 echo "Validating HTML files..."
 
-HTML_FILES=$(find . -name "*.html" -not -path "./node_modules/*" -not -path "./.git/*")
+HTML_FILES=$(find . -name "*.html" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./backup/*")
 HTML_COUNT=$(echo "$HTML_FILES" | wc -l)
 
 print_success "Found $HTML_COUNT HTML file(s)"
@@ -95,7 +95,7 @@ done
 echo ""
 echo "Checking CSS files..."
 
-CSS_FILES=$(find . -name "*.css" -not -path "./node_modules/*" -not -path "./.git/*")
+CSS_FILES=$(find . -name "*.css" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./backup/*")
 CSS_COUNT=$(echo "$CSS_FILES" | wc -l)
 
 if [ $CSS_COUNT -gt 0 ]; then
@@ -108,7 +108,7 @@ fi
 echo ""
 echo "Checking JavaScript files..."
 
-JS_FILES=$(find . -name "*.js" -not -path "./node_modules/*" -not -path "./.git/*")
+JS_FILES=$(find . -name "*.js" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./backup/*")
 JS_COUNT=$(echo "$JS_FILES" | wc -l)
 
 if [ $JS_COUNT -gt 0 ]; then
@@ -134,14 +134,14 @@ echo ""
 echo "Checking for common issues..."
 
 # Check for console.log statements (should be removed in production)
-if grep -r "console.log" . --include="*.js" --exclude-dir=node_modules --exclude-dir=.git > /dev/null 2>&1; then
+if grep -r "console.log" . --include="*.js" --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=backup > /dev/null 2>&1; then
     print_warning "Found console.log statements in JavaScript files (consider removing for production)"
 else
     print_success "No console.log statements found"
 fi
 
 # Check for TODO comments
-TODO_COUNT=$(grep -r "TODO" . --include="*.html" --include="*.js" --include="*.css" --exclude-dir=node_modules --exclude-dir=.git 2>/dev/null | wc -l)
+TODO_COUNT=$(grep -r "TODO" . --include="*.html" --include="*.js" --include="*.css" --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=backup 2>/dev/null | wc -l)
 if [ $TODO_COUNT -gt 0 ]; then
     print_warning "Found $TODO_COUNT TODO comment(s)"
 else
