@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status - Best VPN Compare Online</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 2rem;
+        }
+        
+        .status {
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .status.operational {
+            background: #d4edda;
+            border: 2px solid #28a745;
+        }
+        
+        .status-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .status-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .status-description {
+            color: #666;
+        }
+        
+        .services {
+            text-align: left;
+            margin-top: 2rem;
+        }
+        
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .service-item:last-child {
+            border-bottom: none;
+        }
+        
+        .service-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .service-status.operational {
+            background: #28a745;
+            color: white;
+        }
+        
+        .back-link {
+            margin-top: 2rem;
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .last-updated {
+            margin-top: 2rem;
+            color: #999;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>System Status</h1>
+        
+        <div class="status operational">
+            <div class="status-icon">✅</div>
+            <div class="status-text">All Systems Operational</div>
+            <div class="status-description">All services are running normally</div>
+        </div>
+        
+        <div class="services">
+            <h2 style="margin-bottom: 1rem; color: #2c3e50;">Services</h2>
+            
+            <div class="service-item">
+                <span>Website</span>
+                <span class="service-status operational">Operational</span>
+            </div>
+            
+            <div class="service-item">
+                <span>Quiz System</span>
+                <span class="service-status operational">Operational</span>
+            </div>
+            
+            <div class="service-item">
+                <span>Articles</span>
+                <span class="service-status operational">Operational</span>
+            </div>
+            
+            <div class="service-item">
+                <span>Platform Pages</span>
+                <span class="service-status operational">Operational</span>
+            </div>
+        </div>
+        
+        <div class="last-updated">
+            Last checked: <span id="lastUpdated"></span>
+        </div>
+        
+        <a href="/" class="back-link">← Back to Home</a>
+    </div>
+    
+    <script>
+        // Display current time
+        document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+        
+        // Auto-refresh every 5 minutes
+        setTimeout(() => {
+            location.reload();
+        }, 300000);
+    </script>
+</body>
+</html>

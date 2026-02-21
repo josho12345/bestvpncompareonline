@@ -20,54 +20,187 @@
             </ul>
         </div>
     </nav>
-    
+
     <div class="container">
-        <h1>Find Your Perfect VPN Solution</h1>
-        <p style="margin-bottom: 2rem; color: #666;">Are you looking for VPN security for your home or workplace?</p>
-        <div class="button-group">
-            <button class="btn-home" onclick="selectPath('home')">HOME</button>
-            <button class="btn-workplace" onclick="selectPath('workplace')">WORKPLACE</button>
+        <div id="selection-screen">
+            <h1>Find Your Perfect VPN Solution</h1>
+            <p class="intro-text">Are you looking for VPN security for your home or workplace?</p>
+            <div class="button-group">
+                <button class="btn-home" onclick="startQuiz('home')">🏠 HOME</button>
+                <button class="btn-workplace" onclick="startQuiz('workplace')">🏢 WORKPLACE</button>
+            </div>
+            <div class="description">
+                <p>Choose your context to get personalized VPN recommendations tailored to your specific needs.</p>
+            </div>
         </div>
-        <div class="description">
-            <p>Choose your context to get personalized VPN recommendations tailored to your specific needs.</p>
+
+        <div id="quiz-container">
+            <h2 id="quiz-title"></h2>
+            <div id="quiz-questions"></div>
+            <div class="button-group quiz-actions">
+                <button class="btn-home" onclick="showResults()">Get My Recommendations</button>
+                <button class="btn-back" onclick="resetQuiz()">← Back</button>
+            </div>
+        </div>
+
+        <div id="results">
+            <h2>✅ Your Personalized VPN Recommendations</h2>
+            <div id="recommendations"></div>
+            <div class="button-group quiz-actions">
+                <button class="btn-back" onclick="resetQuiz()">Start Over</button>
+            </div>
         </div>
     </div>
-    
+
     <script src="js/quiz.js"></script>
     <script>
-        function selectPath(path) {
-            console.log('Selected path:', path);
-            
-            // Load configuration
-            fetch('config.json')
-                .then(response => response.json())
-                .then(config => {
-                    const userType = path === 'home' ? config.configurations.homeUserType : config.configurations.workplaceUserType;
-                    
-                    // Display quiz questions for the selected path
-                    if (quiz[path]) {
-                        const quizData = quiz[path];
-                        let quizHtml = `<h2>Quiz for ${path.toUpperCase()}</h2>`;
-                        
-                        quizHtml += '<h3>Layer 1 Questions:</h3><ul>';
-                        quizData.layer1.forEach(q => {
-                            quizHtml += `<li>${q}</li>`;
-                        });
-                        quizHtml += '</ul>';
-                        
-                        quizHtml += '<h3>Layer 2 Questions:</h3><ul>';
-                        quizData.layer2.forEach(q => {
-                            quizHtml += `<li>${q}</li>`;
-                        });
-                        quizHtml += '</ul>';
-                        
-                        alert(`You selected ${path.toUpperCase()}!\n\n${quizHtml.replace(/<[^>]*>/g, '\n')}`);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading configuration:', error);
-                    alert(`You selected ${path.toUpperCase()}!`);
+        let selectedPath = '';
+        let answers = {};
+
+        function startQuiz(path) {
+            selectedPath = path;
+            answers = {};
+            document.getElementById('selection-screen').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            document.getElementById('quiz-title').textContent = path.charAt(0).toUpperCase() + path.slice(1) + ' VPN Security Quiz';
+
+            loadQuestions(path);
+        }
+
+        function loadQuestions(path) {
+            const questionsDiv = document.getElementById('quiz-questions');
+            questionsDiv.innerHTML = '';
+
+            const layer1 = quiz[path].layer1;
+            const layer2 = quiz[path].layer2;
+            const allQuestions = [...layer1, ...layer2];
+
+            allQuestions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.setAttribute('data-question-index', index);
+
+                const heading = document.createElement('h3');
+                heading.textContent = `Question ${index + 1}`;
+
+                const text = document.createElement('p');
+                text.textContent = question;
+
+                const answersDiv = document.createElement('div');
+                answersDiv.className = 'answers';
+
+                const yesBtn = document.createElement('button');
+                yesBtn.className = 'answer-btn';
+                yesBtn.textContent = '✓ Yes';
+                yesBtn.setAttribute('onclick', `selectAnswer(${index}, 'yes')`);
+
+                const noBtn = document.createElement('button');
+                noBtn.className = 'answer-btn';
+                noBtn.textContent = '✗ No';
+                noBtn.setAttribute('onclick', `selectAnswer(${index}, 'no')`);
+
+                answersDiv.appendChild(yesBtn);
+                answersDiv.appendChild(noBtn);
+                questionDiv.appendChild(heading);
+                questionDiv.appendChild(text);
+                questionDiv.appendChild(answersDiv);
+                questionsDiv.appendChild(questionDiv);
+            });
+        }
+
+        function selectAnswer(questionIndex, answer) {
+            answers[questionIndex] = answer;
+
+            const questionDiv = document.querySelector(`.question[data-question-index="${questionIndex}"]`);
+            const buttons = questionDiv.querySelectorAll('.answer-btn');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('answer-disabled');
+            });
+
+            const selectedBtn = answer === 'yes' ? buttons[0] : buttons[1];
+            selectedBtn.classList.remove('answer-disabled');
+            selectedBtn.classList.add('answer-selected');
+        }
+
+        function showResults() {
+            const recommendationsDiv = document.getElementById('recommendations');
+            recommendationsDiv.innerHTML = '';
+
+            const recommendations = generateRecommendations(selectedPath);
+
+            recommendations.forEach(rec => {
+                const recDiv = document.createElement('div');
+                recDiv.className = 'recommendation';
+
+                const name = document.createElement('h3');
+                name.textContent = rec.name;
+
+                const desc = document.createElement('p');
+                desc.textContent = rec.description;
+
+                const bestFor = document.createElement('p');
+                const label = document.createElement('strong');
+                label.textContent = 'Best for: ';
+                bestFor.appendChild(label);
+                bestFor.appendChild(document.createTextNode(rec.bestFor));
+
+                recDiv.appendChild(name);
+                recDiv.appendChild(desc);
+                recDiv.appendChild(bestFor);
+                recommendationsDiv.appendChild(recDiv);
+            });
+
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function generateRecommendations(path) {
+            const recommendations = [];
+
+            if (path === 'home') {
+                recommendations.push({
+                    name: '🥇 ExpressVPN',
+                    description: 'Fast, secure, and easy to use with excellent customer support.',
+                    bestFor: 'Streaming, privacy, and overall performance'
                 });
+                recommendations.push({
+                    name: '🥈 NordVPN',
+                    description: 'Great balance of security, speed, and affordability.',
+                    bestFor: "Budget-conscious users who don't want to compromise on security"
+                });
+                recommendations.push({
+                    name: '🥉 Surfshark',
+                    description: 'Unlimited device connections with strong security features.',
+                    bestFor: 'Families and users with multiple devices'
+                });
+            } else {
+                recommendations.push({
+                    name: '🥇 NordVPN Teams',
+                    description: 'Enterprise-grade security with centralized management.',
+                    bestFor: 'Small to medium businesses requiring robust security'
+                });
+                recommendations.push({
+                    name: '🥈 Perimeter 81',
+                    description: 'Cloud-based VPN with advanced access controls.',
+                    bestFor: 'Modern workplaces with remote teams'
+                });
+                recommendations.push({
+                    name: '🥉 Cisco AnyConnect',
+                    description: 'Enterprise solution with comprehensive security features.',
+                    bestFor: 'Large organizations with complex network requirements'
+                });
+            }
+
+            return recommendations;
+        }
+
+        function resetQuiz() {
+            selectedPath = '';
+            answers = {};
+            document.getElementById('selection-screen').style.display = 'block';
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('results').style.display = 'none';
         }
     </script>
 </body>

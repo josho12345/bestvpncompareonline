@@ -1,0 +1,24 @@
+{
+  "quizQuestions": [
+    {
+      "question": "What is your preferred VPN service for home use?",
+      "answers": [
+        "Service A",
+        "Service B",
+        "Service C"
+      ]
+    },
+    {
+      "question": "What is your preferred VPN service for workplace use?",
+      "answers": [
+        "Service D",
+        "Service E",
+        "Service F"
+      ]
+    }
+  ],
+  "configurations": {
+    "homeUserType": "home",
+    "workplaceUserType": "workplace"
+  }
+}

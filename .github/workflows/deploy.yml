@@ -2,10 +2,13 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, preprod ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, preprod ]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   validate:
@@ -27,7 +30,7 @@ jobs:
     - name: Validate HTML files
       run: |
         echo "Validating HTML files..."
-        find . -name "*.html" -not -path "./node_modules/*" -not -path "./.git/*" -exec echo "Checking: {}" \;
+        find . -name "*.html" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./backup/*" -exec echo "Checking: {}" \;
         # Create a basic .htmlvalidate.json config
         cat > .htmlvalidate.json << 'EOF'
         {
@@ -38,12 +41,12 @@ jobs:
           }
         }
         EOF
-        find . -name "*.html" -not -path "./node_modules/*" -not -path "./.git/*" | xargs html-validate || true
+        find . -name "*.html" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./backup/*" | xargs html-validate || true
         
     - name: Check for broken links
       uses: lycheeverse/lychee-action@v1
       with:
-        args: --verbose --no-progress --exclude-path node_modules --exclude-path .git './**/*.html' './**/*.md'
+        args: --verbose --no-progress --exclude-path node_modules --exclude-path .git --exclude-path backup './**/*.html' './**/*.md'
         fail: false
         
   security-scan:
@@ -93,15 +96,48 @@ jobs:
     - name: Check CSS files
       run: |
         echo "Verifying CSS files..."
-        find . -name "*.css" -not -path "./node_modules/*" -not -path "./.git/*" -exec echo "Found: {}" \;
+        find . -name "*.css" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./backup/*" -exec echo "Found: {}" \;
         
     - name: Check JavaScript files
       run: |
         echo "Verifying JavaScript files..."
-        find . -name "*.js" -not -path "./node_modules/*" -not -path "./.git/*" -exec echo "Found: {}" \;
+        find . -name "*.js" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./backup/*" -exec echo "Found: {}" \;
+
+    - name: Check for console.log statements
+      run: |
+        echo "Checking for console.log statements in source JavaScript..."
+        if grep -r "console\.log" . --include="*.js" --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=backup; then
+          echo "Error: console.log statements found in source JavaScript — remove before deploying"
+          exit 1
+        fi
+        echo "✅ No console.log statements found"
         
     - name: Deployment Ready
       run: |
         echo "🚀 Site is ready for deployment!"
         echo "Domain: $(cat CNAME)"
+        echo "Branch: ${GITHUB_REF##*/}"
         echo "Files validated successfully"
+
+  sync-preprod:
+    name: Sync main → preprod
+    runs-on: ubuntu-latest
+    # Only run when pushing directly to main (not on PRs, not from preprod itself)
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: [deploy-ready]
+
+    steps:
+    - name: Checkout main
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Create or reset preprod branch to HEAD of main
+      run: |
+        git config user.name  "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+        git checkout -B preprod
+        git push origin preprod --force-with-lease || git push origin preprod
+
+        echo "✅ preprod branch is now in sync with main ($(git rev-parse --short HEAD))"

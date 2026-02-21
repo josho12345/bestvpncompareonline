@@ -4,9 +4,10 @@
 User-agent: *
 Allow: /
 
-# Disallow access to scripts and config
+# Disallow access to scripts, config, and backup files
 Disallow: /scripts/
 Disallow: /config.json
+Disallow: /backup/
 
 # Sitemap location
 Sitemap: https://bestvpncompareonline.com/sitemap.xml
